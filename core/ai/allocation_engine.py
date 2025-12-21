@@ -32,24 +32,23 @@ def age_vulnerability_score(age: int) -> int:
 
 # Priority calculation
 
-def calculate_priority(recipient: RecipientRequest, project: DonationProject) -> float:
-    severity = medical_severity_score(recipient.medical_condition)
-    financial = financial_hardship_score(recipient.financial_condition)
-    age_score = age_vulnerability_score(recipient.age)
+def calculate_priority(recipient: RecipientRequest, project: DonationProject) -> Decimal:
+    severity = Decimal(medical_severity_score(recipient.medical_condition))
+    financial = Decimal(financial_hardship_score(recipient.financial_condition))
+    age_score = Decimal(age_vulnerability_score(recipient.age))
 
-    cost_pressure = min(
-        float(recipient.treatment_cost / project.total_estimated_amount),
-        1.0
-    )
+    cost_ratio = recipient.treatment_cost / project.total_estimated_amount
+    cost_pressure = min(cost_ratio, Decimal("1.0"))
 
     priority = (
-        severity * 0.4 +
-        financial * 0.3 +
-        age_score * 0.1 +
-        cost_pressure * 0.2
+        severity * Decimal("0.4") +
+        financial * Decimal("0.3") +
+        age_score * Decimal("0.1") +
+        cost_pressure * Decimal("0.2")
     )
 
     return priority
+
 
 
 # AI Allocation
@@ -79,11 +78,13 @@ def run_ai_allocation(project: DonationProject):
             break
 
         share = (score / total_priority) * project.total_estimated_amount
+
         allocation = min(
-            Decimal(share),
+            share,
             recipient.treatment_cost,
             remaining_fund
         )
+
 
         recipient.ai_recommended_amount = allocation
         recipient.ai_explanation = (
