@@ -88,8 +88,11 @@ def run_ai_allocation(project: DonationProject):
 
         recipient.ai_recommended_amount = allocation
         recipient.ai_explanation = (
-            "Allocation based on medical severity, financial hardship, age vulnerability, "
-            "and proportional project fund availability."
+           f"The recipient was prioritized due to a medical severity score of "
+           f"{medical_severity_score(recipient.medical_condition)}, combined with a "
+           f"financial hardship score of {financial_hardship_score(recipient.financial_condition)}. "
+           f"Age-related vulnerability also contributed to the final priority score of {score:.2f}. "
+           f"Based on available project funds, an amount of {allocation} was allocated."
         )
         recipient.save()
 
