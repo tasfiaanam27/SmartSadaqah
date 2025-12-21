@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.name }} - Completed - SmartSadaqah{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="project-detail completed">
+        <div class="detail-header">
+            <h2>{{ project.name }}</h2>
+            <span class="badge badge-completed">Completed</span>
+        </div>
+
+        <div class="detail-description">
+            <p>{{ project.description }}</p>
+        </div>
+
+        <div class="funding-section">
+            <h3>Final Funding Summary</h3>
+            <div class="funding-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Collected</span>
+                    <span class="stat-value collected">${{ project.total_collected_amount|floatformat:2 }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Target Amount</span>
+                    <span class="stat-value target">${{ project.total_estimated_amount|floatformat:2 }}</span>
+                </div>
+            </div>
+            <div class="progress-bar large">
+                <div class="progress-fill completed" style="width: 100%"></div>
+            </div>
+        </div>
+
+        {% if recipient_requests %}
+            <div class="recipients-section">
+                <h3>Recipients Supported</h3>
+                <div class="recipients-list">
+                    {% for request in recipient_requests %}
+                        {% if request.status == 'FUNDED' %}
+                            <div class="recipient-card funded">
+                                <div class="recipient-header">
+                                    <span class="badge severity-{{ request.illness_severity|lower }}">{{ request.get_illness_severity_display }}</span>
+                                    <span class="badge badge-funded">Funded</span>
+                                </div>
+                                <p class="recipient-description">{{ request.medical_description|truncatewords:25 }}</p>
+                                <div class="recipient-info">
+                                    <span class="info-item">Treatment Cost: ${{ request.estimated_treatment_cost|floatformat:2 }}</span>
+                                    {% if request.admin_approved_amount %}
+                                        <span class="info-item">Approved Amount: ${{ request.admin_approved_amount|floatformat:2 }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

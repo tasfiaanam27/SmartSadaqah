@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SmartSadaqah{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="header-wrapper">
+        <header class="navbar" id="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <div class="logo-section">
+                        <a href="{% url 'home' %}" class="logo-link">
+                            <img src="{% static 'images/smartsadaqah_logo.png' %}" alt="SmartSadaqah Logo" class="header-logo">
+                            <h1 class="logo">SmartSadaqah</h1>
+                        </a>
+                    </div>
+                    <nav class="nav-links">
+                        <a href="{% url 'home' %}">Home</a>
+                        <a href="{% url 'projects_list' %}">Projects</a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'recipient_request' %}">Request Donation</a>
+                        {% endif %}
+                        <a href="{% url 'contact' %}">Contact</a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'logout' %}" class="btn-login">Logout</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn-login">Login</a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+    </div>
+
+    <main class="main-content">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="{% static 'images/smartsadaqah_logo.png' %}" alt="SmartSadaqah Logo" class="footer-logo-img">
+                </div>
+                <div class="footer-nav">
+                    <a href="{% url 'home' %}">Home</a>
+                    <a href="{% url 'projects_list' %}">Projects</a>
+                    <a href="{% url 'completed_projects' %}">Completed Projects</a>
+                    <a href="{% url 'contact' %}">Contact Us</a>
+                </div>
+            </div>
+            <p class="footer-copyright">&copy; {% now "Y" %} SmartSadaqah. All rights reserved.</p>
+            <p class="footer-subtitle">Supporting healthcare through compassionate giving</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - SmartSadaqah{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="login-page">
+        <div class="login-card">
+            <h2>Register as Donor</h2>
+            <p class="subtitle">Create your SmartSadaqah account</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="error-message">
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" class="login-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required minlength="6">
+                    <small>Password must be at least 6 characters long</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">Register</button>
+            </form>
+            
+            <p class="register-link-text">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

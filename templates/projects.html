@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Projects - SmartSadaqah{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2>Donation Projects</h2>
+        <p class="subtitle">Choose a project to support</p>
+    </div>
+
+    {% if projects %}
+        <div class="projects-grid">
+            {% for project in projects %}
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="{% static 'images/project-placeholder.png' %}" alt="{{ project.name }}" class="card-image">
+                    </div>
+                    <div class="project-card-content">
+                        <div class="card-header">
+                            <h3>{{ project.name }}</h3>
+                            <span class="badge badge-active">{{ project.illness_type }}</span>
+                        </div>
+                        <p class="card-description">{{ project.description|truncatewords:30 }}</p>
+                        
+                        <div class="funding-info">
+                            <div class="amount-row">
+                                <span class="label">Collected:</span>
+                                <span class="amount collected">${{ project.total_collected_amount|floatformat:2 }}</span>
+                            </div>
+                            <div class="amount-row">
+                                <span class="label">Target:</span>
+                                <span class="amount target">${{ project.total_estimated_amount|floatformat:2 }}</span>
+                            </div>
+                        </div>
+
+                        {% widthratio project.total_collected_amount project.total_estimated_amount 100 as progress %}
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% if progress > 100 %}100{% else %}{{ progress }}{% endif %}%"></div>
+                        </div>
+                        <p class="progress-text">{{ progress }}% funded</p>
+
+                        <div class="card-actions">
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'donate_to_project' project.id %}" class="btn btn-primary">Donate Now</a>
+                            {% else %}
+                                <a href="{% url 'login' %}" class="btn btn-primary">Donate Now</a>
+                            {% endif %}
+                            <a href="{% url 'project_detail' project.id %}" class="btn btn-secondary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No active projects at the moment. Check back soon!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

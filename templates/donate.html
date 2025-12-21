@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Donate - {{ project.name }} - SmartSadaqah{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="donate-page">
+        <div class="donate-header">
+            <h2>Donate to {{ project.name }}</h2>
+            <p class="subtitle">Your contribution makes a difference</p>
+        </div>
+
+        <div class="donate-content">
+            <div class="project-summary">
+                <h3>Project Summary</h3>
+                <p>{{ project.description|truncatewords:50 }}</p>
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <span class="label">Collected:</span>
+                        <span class="value">${{ project.total_collected_amount|floatformat:2 }}</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="label">Target:</span>
+                        <span class="value">${{ project.total_estimated_amount|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="donate-form-container">
+                <form method="post" class="donate-form" id="donateForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="amount">Donation Amount ($)</label>
+                        <input type="number" id="amount" name="amount" step="0.01" min="1" required placeholder="Enter amount">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">Submit Donation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Completed Projects - SmartSadaqah{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2>Completed Projects</h2>
+        <p class="subtitle">Transparency in our completed initiatives</p>
+    </div>
+
+    {% if projects %}
+        <div class="projects-grid">
+            {% for project in projects %}
+                <div class="project-card completed">
+                    <div class="card-header">
+                        <h3>{{ project.name }}</h3>
+                        <span class="badge badge-completed">Completed</span>
+                    </div>
+                    <p class="card-description">{{ project.description|truncatewords:30 }}</p>
+                    
+                    <div class="funding-info">
+                        <div class="amount-row">
+                            <span class="label">Total Collected:</span>
+                            <span class="amount collected">${{ project.total_collected_amount|floatformat:2 }}</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="label">Target:</span>
+                            <span class="amount target">${{ project.total_estimated_amount|floatformat:2 }}</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill completed" style="width: 100%"></div>
+                    </div>
+                    <p class="progress-text">100% funded</p>
+
+                    <a href="{% url 'completed_project_detail' project.id %}" class="btn btn-secondary">View Distribution</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No completed projects yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

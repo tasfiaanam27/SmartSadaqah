@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - SmartSadaqah{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-overlay"></div>  
+    <div class="hero-content">
+        <h1 class="hero-title">SmartSadaqah</h1>
+        <p class="hero-description">SmartSadaqah is an AI-driven Islamic healthcare donation platform dedicated to supporting patients in need through transparent, ethical, and impact-focused charity. By combining verified medical assistance projects with intelligent fund allocation, SmartSadaqah ensures that every donation reaches those who need it most.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'projects_list' %}" class="btn-primary hero-btn"  title="Your Sadaqah can save a life.">Give Sadaqah</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="projects-section" id="active-projects">
+        <div class="section-header">
+            <h2>Active Donation Projects</h2>
+            <p class="section-subtitle">Support healthcare initiatives and make a difference</p>
+        </div>
+
+        {% if projects %}
+            <div class="projects-grid">
+                {% for project in projects %}
+                    <div class="project-card">
+                        <div class="card-header">
+                            <h3>{{ project.name }}</h3>
+                            <span class="badge badge-active">{{ project.illness_type }}</span>
+                        </div>
+                        <p class="card-description">{{ project.description|truncatewords:30 }}</p>
+                        
+                        <div class="funding-info">
+                            <div class="amount-row">
+                                <span class="label">Collected:</span>
+                                <span class="amount collected">${{ project.total_collected_amount|floatformat:2 }}</span>
+                            </div>
+                            <div class="amount-row">
+                                <span class="label">Target:</span>
+                                <span class="amount target">${{ project.total_estimated_amount|floatformat:2 }}</span>
+                            </div>
+                        </div>
+
+                        {% widthratio project.total_collected_amount project.total_estimated_amount 100 as progress %}
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {% if progress > 100 %}100{% else %}{{ progress }}{% endif %}%"></div>
+                        </div>
+                        <p class="progress-text">{{ progress }}% funded</p>
+
+                        <a href="{% url 'project_detail' project.id %}" class="btn btn-primary">View Project</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No active projects at the moment. Check back soon!</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="projects-section completed-section" id="completed-projects">
+        <div class="section-header">
+            <h2>Completed Projects</h2>
+            <p class="section-subtitle">Transparency in our completed initiatives</p>
+        </div>
+
+        {% if completed_projects %}
+            <div class="projects-grid">
+                {% for project in completed_projects %}
+                    <div class="project-card completed">
+                        <div class="card-header">
+                            <h3>{{ project.name }}</h3>
+                            <span class="badge badge-completed">Completed</span>
+                        </div>
+                        <p class="card-description">{{ project.description|truncatewords:30 }}</p>
+                        
+                        <div class="funding-info">
+                            <div class="amount-row">
+                                <span class="label">Total Collected:</span>
+                                <span class="amount collected">${{ project.total_collected_amount|floatformat:2 }}</span>
+                            </div>
+                            <div class="amount-row">
+                                <span class="label">Target:</span>
+                                <span class="amount target">${{ project.total_estimated_amount|floatformat:2 }}</span>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill completed" style="width: 100%"></div>
+                        </div>
+                        <p class="progress-text">100% funded</p>
+
+                        <a href="{% url 'completed_project_detail' project.id %}" class="btn btn-secondary">View Distribution</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No completed projects yet.</p>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

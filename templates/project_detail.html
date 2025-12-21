@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.name }} - SmartSadaqah{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="project-detail">
+        <div class="detail-header">
+            <h2>{{ project.name }}</h2>
+            <span class="badge badge-active">{{ project.illness_type }}</span>
+        </div>
+
+        <div class="detail-description">
+            <p>{{ project.description }}</p>
+        </div>
+
+        <div class="funding-section">
+            <h3>Funding Progress</h3>
+            <div class="funding-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Collected</span>
+                    <span class="stat-value collected">${{ project.total_collected_amount|floatformat:2 }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Target</span>
+                    <span class="stat-value target">${{ project.total_estimated_amount|floatformat:2 }}</span>
+                </div>
+            </div>
+            {% widthratio project.total_collected_amount project.total_estimated_amount 100 as progress %}
+            <div class="progress-bar large">
+                <div class="progress-fill" style="width: {% if progress > 100 %}100{% else %}{{ progress }}{% endif %}%"></div>
+            </div>
+            <p class="progress-text">{{ progress }}% funded</p>
+        </div>
+
+        {% if recipient_requests %}
+            <div class="recipients-section">
+                <h3>Recipients in Need</h3>
+                <div class="recipients-list">
+                    {% for request in recipient_requests %}
+                        {% if request.status == 'APPROVED' or request.status == 'FUNDED' %}
+                            <div class="recipient-card">
+                                <div class="recipient-header">
+                                    <span class="badge severity-{{ request.illness_severity|lower }}">{{ request.get_illness_severity_display }}</span>
+                                    <span class="badge urgency-{{ request.urgency|lower }}">{{ request.get_urgency_display }}</span>
+                                </div>
+                                <p class="recipient-description">{{ request.medical_description|truncatewords:25 }}</p>
+                                <div class="recipient-info">
+                                    <span class="info-item">Income: {{ request.get_income_level_display }}</span>
+                                    <span class="info-item">Cost: ${{ request.estimated_treatment_cost|floatformat:2 }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if project.status == 'ACTIVE' %}
+            <div class="donate-section">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'donate_to_project' project.id %}" class="btn btn-primary btn-large">Donate Now</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-large">Login to Donate</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
