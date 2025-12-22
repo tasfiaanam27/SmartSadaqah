@@ -81,11 +81,6 @@ def completed_project_detail(request, project_id):
 @login_required
 @require_http_methods(["GET", "POST"])
 def recipient_request_view(request):
-    try:
-        if request.user.profile.role != UserProfile.ROLE_RECIPIENT:
-            return HttpResponseForbidden("Access denied. Only recipients can submit requests.")
-    except:
-        return HttpResponseForbidden("Access denied. Only recipients can submit requests.")
     
     if request.method == 'POST':
         try:
@@ -114,7 +109,11 @@ def recipient_request_view(request):
             financial_condition=request.POST.get('financial_condition'),
             medical_document=request.FILES.get('medical_document'),
         )
-        
+
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile.role = UserProfile.ROLE_RECIPIENT
+        profile.save()
+
         messages.success(request, 'Your request has been submitted and is pending approval.')
         return redirect('recipient_request')
     
