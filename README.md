@@ -10,7 +10,7 @@ The system includes an explainable AI-based allocation mechanism that evaluates 
 
 ## 📸 Project Preview
 
-![SmartSadaqah Homepage]
+![SmartSadaqah Homepage](screenshots/SmartSadaqah_homepage.png)
 
 ---
 
